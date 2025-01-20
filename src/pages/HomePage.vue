@@ -11,14 +11,23 @@
       @click="goToLoginPage"
     ></parallax-card>
   </div>
+  <div id="footer">
+    <nihil-links
+      githubUrl="https://github.com/Nihilnia"
+      linkedinUrl="https://www.linkedin.com/in/okantopal"
+      websiteUrl="https://nihilnia.github.io/Portfolio"
+    ></nihil-links>
+  </div>
 </template>
 
 <script>
 import ParallaxCard from "@/components/UI/ParallaxCard.vue";
+import NihilLinks from "@/components/UI/NihilLinks.vue";
 
 export default {
   components: {
     ParallaxCard,
+    NihilLinks,
   },
   methods: {
     searchWithoutLogin() {
@@ -38,6 +47,13 @@ export default {
   max-width: 70%;
   margin: auto;
   column-gap: 30px;
+  margin-top: 15%;
+}
+
+#footer {
+  max-width: fit-content;
+  margin: auto;
+  margin-top: 44px;
 }
 
 @media all and (max-width: 1200px) {

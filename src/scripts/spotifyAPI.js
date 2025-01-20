@@ -24,7 +24,6 @@ async function getSpotifyToken() {
 }
 
 // Function to fetch songs by name
-
 async function fetchSongByName(songName) {
   try {
     const tokenData = await getSpotifyToken();
@@ -34,7 +33,7 @@ async function fetchSongByName(songName) {
 
     // Fetch the song by name from Spotify's search API
     const response = await fetch(
-      `https://api.spotify.com/v1/search?q=${query}&type=track&limit=10`, // Limit to 10 results
+      `https://api.spotify.com/v1/search?q=${query}&type=track&limit=5`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -52,11 +51,12 @@ async function fetchSongByName(songName) {
     const data = await response.json();
     console.log("Song Search Response:", data); // Log the response for debugging
 
-    // Return an array of song details
+    // Return an array of song details, including track ID for embedding
     const songs = data.tracks.items.map((song) => ({
       name: song.name,
       artist: song.artists[0].name,
       album: song.album.name,
+      id: song.id, // Add the track ID here
     }));
 
     return songs;
@@ -69,7 +69,9 @@ async function fetchSongByName(songName) {
 // Function to fetch playlists by name
 async function fetchPlaylistsByName(query) {
   const token = await getSpotifyToken(); // Use getSpotifyToken here
-  const apiUrl = `https://api.spotify.com/v1/search?query=${query}&type=playlist&limit=5`;
+  const apiUrl = `https://api.spotify.com/v1/search?query=${
+    query + "playlist"
+  }&type=playlist&limit=5`;
 
   const response = await fetch(apiUrl, {
     headers: {
@@ -83,15 +85,20 @@ async function fetchPlaylistsByName(query) {
 
   const data = await response.json();
 
-  // Filter out null values from the playlist items
-  const playlists = data.playlists.items.filter((item) => item !== null);
+  // Return the playlist details
+  const playlists = data.playlists.items.map((playlist) => ({
+    name: playlist.name,
+    id: playlist.id,
+    owner: playlist.owner.display_name,
+    imageUrl: playlist.images[0]?.url || "", // Optional image URL
+  }));
 
   return playlists;
 }
 
 // Function to fetch artists by name
 async function fetchArtistsByName(query) {
-  const token = await getSpotifyToken();
+  const token = await getSpotifyToken(); // Use getSpotifyToken here
   const apiUrl = `https://api.spotify.com/v1/search?query=${query}&type=artist&limit=5`;
 
   const response = await fetch(apiUrl, {
@@ -106,16 +113,15 @@ async function fetchArtistsByName(query) {
 
   const data = await response.json();
 
-  // Filter out null values from the artist items
-  const artists = data.artists.items.filter((item) => item !== null);
-
-  // Ensure genres is not undefined
-  artists.forEach((artist) => {
-    artist.genres = artist.genres || []; // If undefined, default to an empty array
-  });
+  // Return the artist details
+  const artists = data.artists.items.map((artist) => ({
+    name: artist.name,
+    id: artist.id,
+    genres: artist.genres, // List of genres
+    imageUrl: artist.images[0]?.url || "", // Optional image URL
+  }));
 
   return artists;
 }
 
-// Export all functions
 export { fetchSongByName, fetchPlaylistsByName, fetchArtistsByName };

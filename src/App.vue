@@ -1,6 +1,5 @@
 <template>
   <router-view></router-view>
-  <!-- This will render the active component based on the route -->
 </template>
 
 <script>
@@ -19,5 +18,6 @@ export default {
 body {
   font-family: "Poppins", serif;
   background-color: #0c0c0d;
+  color: #fff;
 }
 </style>
